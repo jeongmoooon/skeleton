@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skeleton Animation Geist-Inspired Playground</title>
+<style>
+  :root {
+    --duration: 1.5s;
+    --timing: linear;
+    --delay: 0s;
+    /* Default shimmer color: #e7ebed with alpha 0.75 */
+    --shimmer-color: rgba(231,235,237,0.75);
+    --shimmer-direction: to right;
+    --shimmer-keyframes: shimmerMoveRight;
+    /* Default gradient start and end color: #f5f6f8 */
+    --gradient-start-color: rgb(245,246,248);
+    --gradient-end-color: rgb(245,246,248);
+    /* Default shimmer width: 160% of skeleton width */
+    --shimmer-width: 160%;
+  }
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+    background: #ffffff;
+    color: #333;
+  }
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .control {
+    margin-bottom: 15px;
+  }
+  label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  input[type=range], input[type=color], select {
+    width: 100%;
+  }
+  .value {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+  /* Skeleton base style */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: #f5f6f8;
+    border-radius: 8px;
+    height: 100px;
+    margin-bottom: 20px;
+    animation-duration: var(--duration);
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+  }
+  .skeleton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    height: 100%;
+    width: var(--shimmer-width);
+    background-image: linear-gradient(
+      var(--shimmer-direction),
+      var(--gradient-start-color) 0%,
+      var(--shimmer-color) 50%,
+      var(--gradient-end-color) 100%
+    );
+    animation-name: var(--shimmer-keyframes);
+    animation-duration: var(--duration);
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+    animation-timing-function: var(--timing);
+    animation-delay: var(--delay);
+  }
+  @keyframes shimmerMoveRight {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes shimmerMoveLeft {
+    0% { transform: translateX(50%); }
+    100% { transform: translateX(-100%); }
+  }
+  @keyframes shimmerMoveDown {
+    0% { transform: translateY(-50%); }
+    100% { transform: translateY(100%); }
+  }
+  @keyframes shimmerMoveUp {
+    0% { transform: translateY(50%); }
+    100% { transform: translateY(-100%); }
+  }
+  /* Preview layout styles */
+  .preview {
+    margin-top: 40px;
+  }
+  .preview-label {
+    margin: 12px 0 4px;
+    color: #555;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .preview .skeleton {
+    margin-bottom: 16px;
+  }
+  .preview .skeleton-btn {
+    width: 120px;
+    height: 48px;
+    border-radius: 12px;
+  }
+  .preview .skeleton-card {
+    width: 100%;
+    height: 220px;
+    border-radius: 20px;
+  }
+  .preview .skeleton-text {
+    height: 14px;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+  <h2>Skeleton Animation Geist-Inspired Playground</h2>
+  <div class="container">
+    <!-- Preview of skeleton layout based on Geist example -->
+    <div class="preview">
+      <div class="preview-label">버튼</div>
+      <div class="skeleton skeleton-btn"></div>
+      <div class="preview-label">이미지/카드</div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="preview-label">텍스트</div>
+      <div class="skeleton skeleton-text" style="width: 60%;"></div>
+      <div class="skeleton skeleton-text" style="width: 80%;"></div>
+    </div>
+
+    <!-- Demonstration skeleton that reflects adjustable height, radius and color -->
+    <h3 style="margin-top:40px">Demo Skeleton</h3>
+    <div id="skeleton" class="skeleton" style="width:100%;"></div>
+
+    <!-- Controls -->
+    <div class="control">
+      <label for="duration">Duration (seconds)</label>
+      <input type="range" id="duration" min="0.5" max="5" step="0.1" value="1.5">
+      <div class="value" id="duration-value">1.5s</div>
+    </div>
+    <div class="control">
+      <label for="timing">Timing Function (0:linear, 1:ease, 2:ease-in, 3:ease-out, 4:ease-in-out)</label>
+      <input type="range" id="timing" min="0" max="4" step="1" value="0">
+      <div class="value" id="timing-value">linear</div>
+    </div>
+    <div class="control">
+      <label for="delay">Animation Delay (seconds)</label>
+      <input type="range" id="delay" min="0" max="3" step="0.1" value="0">
+      <div class="value" id="delay-value">0s</div>
+    </div>
+    <div class="control">
+      <label for="direction">Gradient Direction</label>
+      <select id="direction">
+        <option value="to right" selected>Left to Right</option>
+        <option value="to left">Right to Left</option>
+        <option value="to bottom">Top to Bottom</option>
+        <option value="to top">Bottom to Top</option>
+      </select>
+    </div>
+    <div class="control">
+      <label for="shimmerColor">Shimmer Color</label>
+      <input type="color" id="shimmerColor" value="#e7ebed">
+      <div class="value" id="shimmerColor-value">#e7ebed</div>
+    </div>
+    <div class="control">
+      <label for="shimmerAlpha">Shimmer Alpha (0-1)</label>
+      <input type="range" id="shimmerAlpha" min="0" max="1" step="0.05" value="0.75">
+      <div class="value" id="shimmerAlpha-value">0.75</div>
+    </div>
+    <div class="control">
+      <label for="skeletonColor">Skeleton Background Color</label>
+      <input type="color" id="skeletonColor" value="#f5f6f8">
+      <div class="value" id="skeletonColor-value">#f5f6f8</div>
+    </div>
+    <div class="control">
+      <label for="skeletonHeight">Skeleton Height (px)</label>
+      <input type="range" id="skeletonHeight" min="50" max="300" step="5" value="100">
+      <div class="value" id="skeletonHeight-value">100px</div>
+    </div>
+    <div class="control">
+      <label for="borderRadius">Border Radius (px)</label>
+      <input type="range" id="borderRadius" min="0" max="50" step="1" value="8">
+      <div class="value" id="borderRadius-value">8px</div>
+    </div>
+    <div class="control">
+      <label for="gradientStartColor">Gradient Start Color</label>
+      <input type="color" id="gradientStartColor" value="#f5f6f8">
+      <div class="value" id="gradientStartColor-value">#f5f6f8</div>
+    </div>
+    <div class="control">
+      <label for="gradientEndColor">Gradient End Color</label>
+      <input type="color" id="gradientEndColor" value="#f5f6f8">
+      <div class="value" id="gradientEndColor-value">#f5f6f8</div>
+    </div>
+    <div class="control">
+      <label for="shimmerWidth">Shimmer Width (% of skeleton width)</label>
+      <input type="range" id="shimmerWidth" min="50" max="300" step="10" value="160">
+      <div class="value" id="shimmerWidth-value">160%</div>
+    </div>
+  </div>
+  <script>
+    const skeleton = document.getElementById('skeleton');
+    // Note: Preview skeletons share the same CSS variables and will update automatically
+    const durationSlider = document.getElementById('duration');
+    const timingSlider = document.getElementById('timing');
+    const delaySlider = document.getElementById('delay');
+    const directionSelect = document.getElementById('direction');
+    const shimmerColorInput = document.getElementById('shimmerColor');
+    const shimmerAlphaSlider = document.getElementById('shimmerAlpha');
+    const skeletonColorInput = document.getElementById('skeletonColor');
+    const skeletonHeightSlider = document.getElementById('skeletonHeight');
+    const borderRadiusSlider = document.getElementById('borderRadius');
+    const gradientStartColorInput = document.getElementById('gradientStartColor');
+    const gradientEndColorInput = document.getElementById('gradientEndColor');
+    const shimmerWidthSlider = document.getElementById('shimmerWidth');
+
+    const timingFunctions = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out'];
+
+    function hexToRgb(hex) {
+      const r = parseInt(hex.substring(1, 3), 16);
+      const g = parseInt(hex.substring(3, 5), 16);
+      const b = parseInt(hex.substring(5, 7), 16);
+      return { r, g, b };
+    }
+
+    function update() {
+      const durationVal = durationSlider.value;
+      const timingIndex = parseInt(timingSlider.value, 10);
+      const timingVal = timingFunctions[timingIndex] || 'linear';
+      const delayVal = delaySlider.value;
+      const directionVal = directionSelect.value;
+
+      const shimmerColorHex = shimmerColorInput.value;
+      const shimmerAlphaVal = parseFloat(shimmerAlphaSlider.value);
+      const skeletonColorVal = skeletonColorInput.value;
+      const skeletonHeightVal = skeletonHeightSlider.value;
+      const borderRadiusVal = borderRadiusSlider.value;
+      const gradientStartColorHex = gradientStartColorInput.value;
+      const gradientEndColorHex = gradientEndColorInput.value;
+      const shimmerWidthVal = shimmerWidthSlider.value;
+
+      // Update CSS variables for duration, timing, delay, and direction
+      document.documentElement.style.setProperty('--duration', durationVal + 's');
+      document.documentElement.style.setProperty('--timing', timingVal);
+      document.documentElement.style.setProperty('--delay', delayVal + 's');
+      document.documentElement.style.setProperty('--shimmer-direction', directionVal);
+
+      // Update shimmer keyframes based on direction
+      let keyframesName;
+      if (directionVal === 'to right') keyframesName = 'shimmerMoveRight';
+      else if (directionVal === 'to left') keyframesName = 'shimmerMoveLeft';
+      else if (directionVal === 'to bottom') keyframesName = 'shimmerMoveDown';
+      else if (directionVal === 'to top') keyframesName = 'shimmerMoveUp';
+      else keyframesName = 'shimmerMoveRight';
+      document.documentElement.style.setProperty('--shimmer-keyframes', keyframesName);
+
+      // Update shimmer color with alpha
+      const shimmerRgb = hexToRgb(shimmerColorHex);
+      const shimmerColorStr = `rgba(${shimmerRgb.r},${shimmerRgb.g},${shimmerRgb.b},${shimmerAlphaVal})`;
+      document.documentElement.style.setProperty('--shimmer-color', shimmerColorStr);
+
+      // Update gradient start and end colors (full opacity)
+      const startRgb = hexToRgb(gradientStartColorHex);
+      const endRgb = hexToRgb(gradientEndColorHex);
+      const startColorStr = `rgb(${startRgb.r},${startRgb.g},${startRgb.b})`;
+      const endColorStr = `rgb(${endRgb.r},${endRgb.g},${endRgb.b})`;
+      document.documentElement.style.setProperty('--gradient-start-color', startColorStr);
+      document.documentElement.style.setProperty('--gradient-end-color', endColorStr);
+
+      // Update shimmer width
+      document.documentElement.style.setProperty('--shimmer-width', shimmerWidthVal + '%');
+
+      // Update skeleton style properties
+      skeleton.style.backgroundColor = skeletonColorVal;
+      skeleton.style.height = skeletonHeightVal + 'px';
+      skeleton.style.borderRadius = borderRadiusVal + 'px';
+
+      // Update displayed values
+      document.getElementById('duration-value').textContent = durationVal + 's';
+      document.getElementById('timing-value').textContent = timingVal;
+      document.getElementById('delay-value').textContent = delayVal + 's';
+      document.getElementById('shimmerColor-value').textContent = shimmerColorHex;
+      document.getElementById('shimmerAlpha-value').textContent = shimmerAlphaVal;
+      document.getElementById('skeletonColor-value').textContent = skeletonColorVal;
+      document.getElementById('skeletonHeight-value').textContent = skeletonHeightVal + 'px';
+      document.getElementById('borderRadius-value').textContent = borderRadiusVal + 'px';
+      document.getElementById('gradientStartColor-value').textContent = gradientStartColorHex;
+      document.getElementById('gradientEndColor-value').textContent = gradientEndColorHex;
+      document.getElementById('shimmerWidth-value').textContent = shimmerWidthVal + '%';
+    }
+
+    // Event listeners
+    durationSlider.addEventListener('input', update);
+    timingSlider.addEventListener('input', update);
+    delaySlider.addEventListener('input', update);
+    directionSelect.addEventListener('change', update);
+    shimmerColorInput.addEventListener('input', update);
+    shimmerAlphaSlider.addEventListener('input', update);
+    skeletonColorInput.addEventListener('input', update);
+    skeletonHeightSlider.addEventListener('input', update);
+    borderRadiusSlider.addEventListener('input', update);
+    gradientStartColorInput.addEventListener('input', update);
+    gradientEndColorInput.addEventListener('input', update);
+    shimmerWidthSlider.addEventListener('input', update);
+
+    // Initialize display values
+    update();
+  </script>
+</body>
+</html>
